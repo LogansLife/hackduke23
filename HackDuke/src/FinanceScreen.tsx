@@ -8,14 +8,17 @@ import {
   Easing,
   PanResponder,
   ScrollView,
+  Linking,
 } from 'react-native';
 import getData from '../APIS/news';
 import CoinBalanceSchema from './CoinBalance';
 import summarizer from '../APIS/text-summarizer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface FlipCardProps {
   title: string;
   content: string;
+  url: string;
 }
 
 const ArticleSchema = {
@@ -25,11 +28,12 @@ const ArticleSchema = {
     id: 'string',
     title: 'string',
     content: 'string',
+    url: 'string',
   },
 };
 
 const FinanceScreen: React.FC = () => {
-  const FlipCard: React.FC<FlipCardProps> = ({title, content}) => {
+  const FlipCard: React.FC<FlipCardProps> = ({title, content, url}) => {
     const flipAnimation = useRef(new Animated.Value(0)).current;
     const flipRotation = useRef(false);
     const [panResponderEnabled, setPanResponderEnabled] = useState(true);
@@ -70,66 +74,92 @@ const FinanceScreen: React.FC = () => {
       }
     };
 
+    const handlePress = () => {
+      if (panResponderEnabled) {
+        storeCoins();
+        Linking.openURL(url);
+      }
+    };
+
+    const storeCoins = async () => {
+      try {
+        let coins = await getCoins();
+        console.log(coins);
+        await AsyncStorage.setItem('userCoins', (coins + 1).toString());
+      } catch (error) {
+        console.error('Error storing coins:', error);
+      }
+    };
+
+    const getCoins = async () => {
+      try {
+        const userCoins = await AsyncStorage.getItem('userCoins');
+        if (userCoins !== null) {
+          // Convert the retrieved value to a number
+          return parseInt(userCoins, 10);
+        }
+        // If the value doesn't exist (first launch), return a default value
+        return 0;
+      } catch (error) {
+        console.error('Error retrieving coins:', error);
+        // Handle errors here, e.g., return a default value
+        return 0;
+      }
+    };
+
+    const handleRelease = () => {
+      if (panResponderEnabled) {
+        // Release without scrolling, open URL
+        Linking.openURL(url);
+      }
+    };
+
     const panResponder = useRef(
       PanResponder.create({
         onStartShouldSetPanResponder: () => true,
         onMoveShouldSetPanResponder: () => true,
         onPanResponderGrant: () => {
           setPanResponderEnabled(false);
-          flipCard();
         },
         onPanResponderRelease: () => {
+          // On release, we check if panResponderEnabled is still false
+          // This means no scrolling occurred
+          handleRelease();
+          setPanResponderEnabled(true);
+        },
+        onResponderTerminate: () => {
+          // On termination, we consider it a click
+          handleRelease();
           setPanResponderEnabled(true);
         },
       }),
     ).current;
 
     return (
-      <View {...panResponder.panHandlers}>
-        <View>
-          <Animated.View style={[styles.flipCard, flipToFrontStyle]}>
-            <Text>{title}</Text>
-          </Animated.View>
-          <Animated.View
-            style={[styles.flipCard, styles.flipCardBack, flipToBackStyle]}>
-            <Text>{content}</Text>
-          </Animated.View>
-        </View>
+      <View>
+        <TouchableOpacity
+          {...panResponder.panHandlers}
+          onPress={handlePress} // Handle short press
+          activeOpacity={1} // Disable the default opacity change on press
+        >
+          <View>
+            <Animated.View style={[styles.flipCard, flipToFrontStyle]}>
+              <Text>{title}</Text>
+            </Animated.View>
+            <Animated.View
+              style={[styles.flipCard, styles.flipCardBack, flipToBackStyle]}>
+              <Text>{content}</Text>
+            </Animated.View>
+          </View>
+        </TouchableOpacity>
       </View>
     );
   };
 
   const [coins, setCoins] = useState(0);
 
-  // const fetchCoinBalance = async () => {
-  //   const realm = await Realm.open({schema: [CoinBalanceSchema]});
-  //   let balance = realm.objectForPrimaryKey('CoinBalance', 0);
-
-  //   if (!balance) {
-  //     realm.write(() => {
-  //       balance = realm.create('CoinBalance', {id: 0, coins: 0});
-  //     });
-  //   }
-
-  //   const coins = balance.coins;
-  //   realm.close();
-
-  //   return coins;
-  // };
-
-  // const addCoins = async (amount: number) => {
-  //   const realm = await Realm.open({schema: [CoinBalanceSchema]});
-  //   const balance = realm.objectForPrimaryKey('CoinBalance', 0);
-
-  //   realm.write(() => {
-  //     balance.coins += amount;
-  //   });
-
-  //   realm.close();
-  // };
-
   const [data, setData] = useState<{
-    articles: {id: string; title: string; content: Pr}[];
+    articles: {id: string; title: string; content: string; url: string}[];
   }>({
     articles: [],
   });
@@ -137,8 +167,6 @@ const FinanceScreen: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // const coinCount = await fetchCoinBalance();
-        // setCoins(coinCount);
         const newData = await getData();
         setData(newData);
       } catch (error) {
@@ -154,7 +182,12 @@ const FinanceScreen: React.FC = () => {
       <ScrollView>
         {/* Map FlipCard components to screen based on data */}
         {data.articles.map(item => (
-          <FlipCard key={item.id} title={item.title} content={item.content} />
+          <FlipCard
+            key={item.id}
+            title={item.title}
+            content={item.content}
+            url={item.url}
+          />
         ))}
       </ScrollView>
     </View>
@@ -170,7 +203,7 @@ const styles = StyleSheet.create({
   },
   flipCard: {
     width: '95%',
-    height: 400,
+    height: 100,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'white',
