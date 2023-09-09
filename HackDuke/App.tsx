@@ -6,10 +6,10 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {enableScreens} from 'react-native-screens';
 import HomeScreen from './HomeScreen';
 import FinanceScreen from './FinanceScreen';
+import PoliticsScreen from './PoliticsScreen';
 enableScreens();
 
 // Sample screens for the bottom tabs
-
 
 function SettingsScreen() {
   return (
@@ -19,13 +19,6 @@ function SettingsScreen() {
   );
 }
 
-function PoliticsScreen() {
-  return (
-    <SafeAreaView>
-      <Text>Settings Screen</Text>
-    </SafeAreaView>
-  );
-}
 const Tab = createBottomTabNavigator();
 
 function App() {

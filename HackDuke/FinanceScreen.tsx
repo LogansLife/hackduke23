@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -7,9 +7,16 @@ import {
   Animated,
   Easing,
   PanResponder,
+  ScrollView,
 } from 'react-native';
+import getData from './APIS/news';
 
-const FlipCard = () => {
+interface FlipCardProps {
+  title: string;
+  content: string;
+}
+
+const FlipCard: React.FC<FlipCardProps> = ({title, content}) => {
   const flipAnimation = useRef(new Animated.Value(0)).current;
   const flipRotation = useRef(false);
   const [panResponderEnabled, setPanResponderEnabled] = useState(true);
@@ -59,32 +66,50 @@ const FlipCard = () => {
       onPanResponderRelease: () => {
         setPanResponderEnabled(true);
       },
-    })
+    }),
   ).current;
 
   return (
     <View {...panResponder.panHandlers}>
       <View>
         <Animated.View style={[styles.flipCard, flipToFrontStyle]}>
-          <Text>Headline</Text>
+          <Text>{title}</Text>
         </Animated.View>
         <Animated.View
-          style={[styles.flipCard, styles.flipCardBack, flipToBackStyle]}
-        >
-          <Text>Story</Text>
+          style={[styles.flipCard, styles.flipCardBack, flipToBackStyle]}>
+          <Text>{content}</Text>
         </Animated.View>
       </View>
     </View>
   );
 };
 
-const FinanceScreen = () => {
+const FinanceScreen: React.FC = () => {
+  const [data, setData] = useState<{
+    articles: {id: string; title: string; content: string}[];
+  }>({
+    articles: [],
+  });
+
+  useEffect(() => {
+    // Call `getData` and handle the Promise
+    getData()
+      .then(newData => {
+        setData(newData);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }, []);
+
   return (
     <View style={styles.container}>
-      <FlipCard />
-      <FlipCard />
-      <FlipCard />
-      <FlipCard />
+      <ScrollView>
+        {/* Map FlipCard components to screen based on data */}
+        {data.articles.map(item => (
+          <FlipCard key={item.id} title={item.title} content={item.content} />
+        ))}
+      </ScrollView>
     </View>
   );
 };
@@ -92,19 +117,22 @@ const FinanceScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
   },
   flipCard: {
-    width: 150,
-    height: 200,
+    width: '95%',
+    height: 400,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'grey',
+    backgroundColor: 'white',
     backfaceVisibility: 'hidden',
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: 'black',
+    margin: 10,
+    padding: 10,
   },
   flipCardBack: {
     position: 'absolute',
