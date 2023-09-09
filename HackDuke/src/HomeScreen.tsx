@@ -9,15 +9,15 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {ScrollView} from 'react-native';
+import {createStackNavigator} from '@react-navigation/stack';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-function HomeScreen({navigation}) {
+function HomeStackScreen({navigation}) {
   return (
     <>
       <View>
-        <Text>Home Screen</Text>
         <Image
           source={require('./assets/bear-animal-flat-vector-design-isolated-free-png.webp')}
           style={styles.bear}
@@ -77,4 +77,4 @@ const styles = {
   },
 };
 
-export default HomeScreen;
+export default HomeStackScreen;

@@ -32,7 +32,7 @@ const ArticleSchema = {
   },
 };
 
-const FinanceScreen: React.FC = () => {
+const FinanceScreen: React.FC = ({storeCoins}) => {
   const FlipCard: React.FC<FlipCardProps> = ({title, content, url}) => {
     const flipAnimation = useRef(new Animated.Value(0)).current;
     const flipRotation = useRef(false);
@@ -78,32 +78,6 @@ const FinanceScreen: React.FC = () => {
       if (panResponderEnabled) {
         storeCoins();
         Linking.openURL(url);
-      }
-    };
-
-    const storeCoins = async () => {
-      try {
-        let coins = await getCoins();
-        console.log(coins);
-        await AsyncStorage.setItem('userCoins', (coins + 1).toString());
-      } catch (error) {
-        console.error('Error storing coins:', error);
-      }
-    };
-
-    const getCoins = async () => {
-      try {
-        const userCoins = await AsyncStorage.getItem('userCoins');
-        if (userCoins !== null) {
-          // Convert the retrieved value to a number
-          return parseInt(userCoins, 10);
-        }
-        // If the value doesn't exist (first launch), return a default value
-        return 0;
-      } catch (error) {
-        console.error('Error retrieving coins:', error);
-        // Handle errors here, e.g., return a default value
-        return 0;
       }
     };
 
