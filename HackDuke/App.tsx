@@ -5,6 +5,7 @@ import {SafeAreaView, useColorScheme, StatusBar, Text} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {enableScreens} from 'react-native-screens';
 import HomeScreen from './HomeScreen';
+import FinanceScreen from './FinanceScreen';
 enableScreens();
 
 // Sample screens for the bottom tabs
@@ -18,13 +19,6 @@ function SettingsScreen() {
   );
 }
 
-function FinanceScreen() {
-  return (
-    <SafeAreaView>
-      <Text>Settings Screen</Text>
-    </SafeAreaView>
-  );
-}
 function PoliticsScreen() {
   return (
     <SafeAreaView>
