@@ -4,9 +4,9 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {SafeAreaView, useColorScheme, StatusBar, Text} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {enableScreens} from 'react-native-screens';
-import HomeScreen from './HomeScreen';
-import FinanceScreen from './FinanceScreen';
-import PoliticsScreen from './PoliticsScreen';
+import HomeScreen from './src/HomeScreen';
+import FinanceScreen from './src/FinanceScreen';
+import PoliticsScreen from './src/PoliticsScreen';
 enableScreens();
 
 // Sample screens for the bottom tabs
