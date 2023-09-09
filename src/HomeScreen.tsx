@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Button,
   Dimensions,
@@ -7,73 +7,115 @@ import {
   Text,
   View,
   TouchableOpacity,
-} from 'react-native';
-import {ScrollView} from 'react-native';
-import {createStackNavigator} from '@react-navigation/stack';
+} from "react-native";
+import { ScrollView } from "react-native";
+import { createStackNavigator } from "@react-navigation/stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import images from "./items";
+import { FlatList } from "react-native-gesture-handler";
+import "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
-function HomeStackScreen({navigation}) {
+function HomeStackScreen() {
+  const [items, setItems] = React.useState([]);
+
+  React.useEffect(() => {
+    const getItems = async () => {
+      const userItems = await AsyncStorage.getItem("items");
+      setItems(JSON.parse(userItems));
+    };
+    getItems();
+  }, [setTimeout(() => {}, 1000)]);
+
+  const filteredImages = images.filter((item) => items.includes(item.name));
+
   return (
-    <>
+    <GestureHandlerRootView>
       <View>
+        {/* Background Image */}
         <Image
-          source={require('./assets/bear-animal-flat-vector-design-isolated-free-png.webp')}
-          style={styles.bear}
+          source={require("./assets/bg.jpeg")}
+          style={{
+            position: "absolute",
+            width: windowWidth,
+            height: windowHeight * 0.4,
+          }}
         />
+        {/* Big bear image */}
+        <Image source={require("./assets/bigbear.png")} style={styles.bear} />
+        {/* Grid of items that user owns (images) */}
         <ScrollView style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('Finance')}>
-            <Text style={styles.buttonText}>{'Finance'}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('Settings')}>
-            <Text style={styles.buttonText}>{'Settings'}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('Politics')}>
-            <Text style={styles.buttonText}>{'Politics'}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('Finance')}>
-            <Text style={styles.buttonText}>{'Finance'}</Text>
-          </TouchableOpacity>
+          {/* Grid with 2 columns */}
+          <View
+            style={{
+              flexDirection: "row",
+              flexWrap: "wrap",
+              justifyContent: "space-between",
+            }}
+          >
+            {/* Map item images IF items isnt null*/}
+            <FlatList
+              data={filteredImages}
+              keyExtractor={(item, index) => item.id}
+              renderItem={({ item }) => (
+                <View>
+                  <Image source={item.src} style={styles.inventoryItem} />
+                  <Text>{item.name}</Text>
+                </View>
+              )}
+            />
+          </View>
         </ScrollView>
       </View>
-    </>
+    </GestureHandlerRootView>
   );
 }
 
 const styles = {
   bear: {
-    width: windowWidth * 0.85,
-    height: windowHeight * 0.28,
-    left: windowWidth * 0.05,
-    top: windowHeight * 0.15,
-    marginBottom: windowHeight * 0.2,
+    // full image, no clipping, full width
+    width: windowWidth,
+    height: windowHeight * 0.4,
+    resizeMode: "contain",
   },
   button: {
     width: windowWidth,
     height: windowHeight * 0.05,
-    backgroundColor: 'white',
-    alignSelf: 'center',
+    backgroundColor: "white",
+    alignSelf: "center",
     borderRadius: 10,
     marginBottom: windowHeight * 0.005,
   },
   buttonText: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: 'black',
-    textAlign: 'center',
-    textAlignVertical: 'center',
+    fontWeight: "bold",
+    color: "black",
+    textAlign: "center",
+    textAlignVertical: "center",
   },
   buttonContainer: {
     top: windowHeight * 0,
+    // black border
+    borderWidth: 2,
+    borderColor: "black",
+    // white background
+    backgroundColor: "white",
+    // 95% width
+    width: windowWidth * 0.95,
+    // 50% height
+    height: windowHeight * 0.5,
+    // center horizontally
+    alignSelf: "center",
+  },
+  inventoryItem: {
+    // show full image, no clipping
+    width: windowWidth * 0.4,
+    //justify height
+    height: windowHeight * 0.2,
+    resizeMode: "contain",
   },
 };
 

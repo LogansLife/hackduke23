@@ -1,24 +1,18 @@
-import React, {useEffect} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {SafeAreaView, useColorScheme, StatusBar, Text} from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {enableScreens} from 'react-native-screens';
-import HomeScreen from './src/HomeScreen';
-import FinanceScreen from './src/FinanceScreen';
-import PoliticsScreen from './src/PoliticsScreen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { SafeAreaView, useColorScheme, StatusBar, Text } from "react-native";
+import { Colors } from "react-native/Libraries/NewAppScreen";
+import { enableScreens } from "react-native-screens";
+import HomeScreen from "./src/HomeScreen";
+import FinanceScreen from "./src/FinanceScreen";
+import PoliticsScreen from "./src/PoliticsScreen";
+import StoreScreen from "./src/StoreScreen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Image, View } from "react-native";
 
 enableScreens();
-
-function SettingsScreen() {
-  return (
-    <SafeAreaView>
-      <Text>Settings Screen</Text>
-    </SafeAreaView>
-  );
-}
 
 // Stacks for each screen
 const HomeStack = createStackNavigator();
@@ -29,7 +23,7 @@ const PoliticsStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
+  const isDarkMode = useColorScheme() === "dark";
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
@@ -37,42 +31,16 @@ function App() {
 
   useEffect(() => {
     const getCoins = async () => {
-      const userCoins = await AsyncStorage.getItem('userCoins');
+      const userCoins = await AsyncStorage.getItem("userCoins");
       setCoins(parseInt(userCoins, 10));
     };
     getCoins();
-  }, []);
-
-  const storeCoins = async () => {
-    try {
-      let coins = await getCoins();
-      console.log(coins);
-      await AsyncStorage.setItem('userCoins', (coins + 1).toString());
-    } catch (error) {
-      console.error('Error storing coins:', error);
-    }
-  };
-
-  const getCoins = async () => {
-    try {
-      const userCoins = await AsyncStorage.getItem('userCoins');
-      if (userCoins !== null) {
-        // Convert the retrieved value to a number
-        return parseInt(userCoins, 10);
-      }
-      // If the value doesn't exist (first launch), return a default value
-      return 0;
-    } catch (error) {
-      console.error('Error retrieving coins:', error);
-      // Handle errors here, e.g., return a default value
-      return 0;
-    }
-  };
+  }, [setTimeout(() => {}, 1000)]);
 
   return (
     <SafeAreaView style={backgroundStyle} flex={1}>
       <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+        barStyle={isDarkMode ? "light-content" : "dark-content"}
         backgroundColor={backgroundStyle.backgroundColor}
       />
       <NavigationContainer>
@@ -81,56 +49,130 @@ function App() {
             name="Home"
             component={HomeScreen}
             options={{
-              headerTitle: `Coins: ${coins}`,
               headerStyle: {
-                backgroundColor: '#f5f5f5',
+                backgroundColor: "#f5f5f5",
               },
-              headerTintColor: '#333',
+              headerTintColor: "#333",
               headerTitleStyle: {
-                fontWeight: 'bold',
+                fontWeight: "bold",
               },
+
+              // image in middle of header
+              headerTitle: () => (
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Image
+                    source={require("./src/assets/salmonnn.png")}
+                    style={{ width: 70, height: 50 }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 30,
+                      fontWeight: "bold",
+                      marginLeft: 10,
+                      // salmon color
+                      color: "#ff7f50",
+                    }}
+                  >
+                    {coins}
+                  </Text>
+                </View>
+              ),
             }}
           />
           <Tab.Screen
-            name="Settings"
-            component={SettingsScreen}
+            name="Store"
+            component={StoreScreen}
             options={{
-              headerTitle: `Coins: ${coins}`,
               headerStyle: {
-                backgroundColor: '#f5f5f5',
+                backgroundColor: "#f5f5f5",
               },
-              headerTintColor: '#333',
+              headerTintColor: "#333",
               headerTitleStyle: {
-                fontWeight: 'bold',
+                fontWeight: "bold",
               },
+              headerTitle: () => (
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Image
+                    source={require("./src/assets/salmonnn.png")}
+                    style={{ width: 70, height: 50 }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 30,
+                      fontWeight: "bold",
+                      marginLeft: 10,
+                      // salmon color
+                      color: "#ff7f50",
+                    }}
+                  >
+                    {coins}
+                  </Text>
+                </View>
+              ),
             }}
           />
           <Tab.Screen
             name="Finance"
-            children={props => <FinanceScreen storeCoins={storeCoins} />}
+            component={FinanceScreen}
             options={{
-              headerTitle: `Coins: ${coins}`,
               headerStyle: {
-                backgroundColor: '#f5f5f5',
+                backgroundColor: "#f5f5f5",
               },
-              headerTintColor: '#333',
+              headerTintColor: "#333",
               headerTitleStyle: {
-                fontWeight: 'bold',
+                fontWeight: "bold",
               },
+              headerTitle: () => (
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Image
+                    source={require("./src/assets/salmonnn.png")}
+                    style={{ width: 70, height: 50 }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 30,
+                      fontWeight: "bold",
+                      marginLeft: 10,
+                      // salmon color
+                      color: "#ff7f50",
+                    }}
+                  >
+                    {coins}
+                  </Text>
+                </View>
+              ),
             }}
           />
           <Tab.Screen
             name="Politics"
             component={PoliticsScreen}
             options={{
-              headerTitle: `Coins: ${coins}`,
               headerStyle: {
-                backgroundColor: '#f5f5f5',
+                backgroundColor: "#f5f5f5",
               },
-              headerTintColor: '#333',
+              headerTintColor: "#333",
               headerTitleStyle: {
-                fontWeight: 'bold',
+                fontWeight: "bold",
               },
+              headerTitle: () => (
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Image
+                    source={require("./src/assets/salmonnn.png")}
+                    style={{ width: 70, height: 50 }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 30,
+                      fontWeight: "bold",
+                      marginLeft: 10,
+                      // salmon color
+                      color: "#ff7f50",
+                    }}
+                  >
+                    {coins}
+                  </Text>
+                </View>
+              ),
             }}
           />
         </Tab.Navigator>
