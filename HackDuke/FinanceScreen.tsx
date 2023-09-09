@@ -1,10 +1,18 @@
-import React, {useRef, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Animated} from 'react-native';
+import React, { useRef, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Animated,
+  Easing,
+  PanResponder,
+} from 'react-native';
 
 const FlipCard = () => {
   const flipAnimation = useRef(new Animated.Value(0)).current;
-  let flipRotation = 0;
-  flipAnimation.addListener(({value}) => (flipRotation = value));
+  const flipRotation = useRef(false);
+  const [panResponderEnabled, setPanResponderEnabled] = useState(true);
 
   const flipToFrontStyle = {
     transform: [
@@ -27,37 +35,45 @@ const FlipCard = () => {
     ],
   };
 
-  const flipToFront = () => {
-    Animated.timing( flipAnimation, {
-      toValue: 180,
-      duration: 300,
-      useNativeDriver: true,
-    } ).start();
-  };
-  const flipToBack = () => {
-    Animated.timing( flipAnimation, {
-      toValue: 0,
-      duration: 300,
-      useNativeDriver: true,
-    } ).start();
+  const flipCard = () => {
+    if (panResponderEnabled) {
+      flipRotation.current = !flipRotation.current;
+
+      Animated.timing(flipAnimation, {
+        toValue: flipRotation.current ? 180 : 0,
+        duration: 300,
+        useNativeDriver: true,
+        easing: Easing.linear,
+      }).start();
+    }
   };
 
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: () => {
+        setPanResponderEnabled(false);
+        flipCard();
+      },
+      onPanResponderRelease: () => {
+        setPanResponderEnabled(true);
+      },
+    })
+  ).current;
+
   return (
-    <View>
+    <View {...panResponder.panHandlers}>
       <View>
         <Animated.View style={[styles.flipCard, flipToFrontStyle]}>
-          <Text>Front of the Card</Text>
+          <Text>Headline</Text>
         </Animated.View>
         <Animated.View
-          style={[styles.flipCard, styles.flipCardBack, flipToBackStyle]}>
-          <Text>Back of the Card</Text>
+          style={[styles.flipCard, styles.flipCardBack, flipToBackStyle]}
+        >
+          <Text>Story</Text>
         </Animated.View>
       </View>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => (!!flipRotation ? flipToBack() : flipToFront())}>
-        <Text>Flip</Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -93,11 +109,6 @@ const styles = StyleSheet.create({
   flipCardBack: {
     position: 'absolute',
     top: 0,
-  },
-  button: {
-    marginTop: 10,
-    padding: 10,
-    backgroundColor: 'blue',
   },
 });
 
