@@ -10,7 +10,7 @@ import {
   ScrollView,
   Linking,
 } from "react-native";
-import getNewsURLS from "../APIS/newsB";
+import getNewsURLSP from "../APIS/NewsP";
 // import getData from "../APIS/test";
 import CoinBalanceSchema from "./CoinBalance";
 import {summarizer} from "../APIS/text-summarizer";
@@ -33,7 +33,7 @@ const ArticleSchema = {
   },
 };
 
-const FinanceScreen: React.FC = () => {
+const TechScreen: React.FC = () => {
   const FlipCard: React.FC<FlipCardProps> = ({ title, content, url }) => {
     const flipAnimation = useRef(new Animated.Value(0)).current;
     const flipRotation = useRef(false);
@@ -225,7 +225,7 @@ const fetchAllTexts = async (urls: string[]): Promise<ExtractedData[]> => {
 useEffect(() => {
   const fetchData = async () => {
     try {
-      const newData = await getNewsURLS();
+      const newData = await getNewsURLSP();
 
       const urls = newData.articles
       .filter((article) => !article.url.startsWith('https://removed.com'))
@@ -299,4 +299,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FinanceScreen;
+export default TechScreen;
