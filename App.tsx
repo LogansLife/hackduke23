@@ -30,17 +30,23 @@ function App() {
   const [coins, setCoins] = React.useState();
 
   useEffect(() => {
-    setInterval(() => {
-      const getCoins = async () => {
-        const userCoins = await AsyncStorage.getItem("userCoins");
-        if (userCoins == null) {
-          await AsyncStorage.setItem("userCoins", "0");
-        }
-        setCoins(parseInt(userCoins, 10));
-      };
+    const getCoins = async () => {
+      const userCoins = await AsyncStorage.getItem("userCoins");
+      if (userCoins == null) {
+        await AsyncStorage.setItem("userCoins", "0");
+      }
+      setCoins(parseInt(userCoins, 10));
+    };
 
+    getCoins();
+
+    // Set up a timer to fetch coins every second
+    const intervalId = setInterval(() => {
       getCoins();
     }, 500);
+
+    // Clear the interval when the component unmounts
+    return () => clearInterval(intervalId);
   }, []);
 
   return (

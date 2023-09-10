@@ -32,7 +32,7 @@ function HomeStackScreen() {
       }
     };
     getItems();
-  }, [setTimeout(() => {}, 1000)]);
+  }, [items]);
 
   const filteredImages = images.filter((item) => items.includes(item.name));
 

@@ -6,9 +6,19 @@ import images from "./items";
 import { StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { View } from "react-native";
+import { Image } from "react-native";
 
 const buyItem = async (name: String) => {
   try {
+    // check if have enough coins
+    const currentCoins = await AsyncStorage.getItem("userCoins");
+    const parsedCoins = parseInt(currentCoins, 10);
+    const itemCost = images.find((item) => item.name === name)?.cost;
+    if (parsedCoins < parseInt(itemCost)) {
+      console.log("Not enough coins!");
+      return;
+    }
+
     // Fetch the current array from AsyncStorage
     const currentArray = await AsyncStorage.getItem("items");
 
@@ -22,9 +32,6 @@ const buyItem = async (name: String) => {
     await AsyncStorage.setItem("items", JSON.stringify(parsedArray));
 
     // Subtract money
-    const currentCoins = await AsyncStorage.getItem("userCoins");
-    const parsedCoins = parseInt(currentCoins, 10);
-    const itemCost = images.find((item) => item.name === name)?.cost;
     const newCoins = parsedCoins - parseInt(itemCost);
     console.log(newCoins);
     await AsyncStorage.setItem("userCoins", JSON.stringify(newCoins));
@@ -36,10 +43,27 @@ const buyItem = async (name: String) => {
 };
 
 function StoreScreen() {
+  const [items, setItems] = React.useState([]);
+
+  React.useEffect(() => {
+    const getItems = async () => {
+      const userItems = await AsyncStorage.getItem("items");
+      if (userItems) {
+        setItems(JSON.parse(userItems));
+      } else {
+        setItems([""]);
+      }
+    };
+
+    getItems();
+  }, [items]);
+
+  const filteredImages = images.filter((item) => !items.includes(item.name));
+
   return (
     <SafeAreaView>
       {/* Map names of all images */}
-      {images.map((item) => (
+      {filteredImages.map((item) => (
         <TouchableOpacity
           style={styles.button}
           key={item.id}
@@ -49,7 +73,13 @@ function StoreScreen() {
             <Text style={styles.itemName}>
               {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
             </Text>
-            <Text style={styles.cost}>{item.cost} salmon</Text>
+            <View style={styles.fishandcost}>
+              <Text style={styles.cost}>{item.cost}</Text>
+              <Image
+                source={require("./assets/salmonnn.png")}
+                style={{ width: 35, height: 30 }}
+              />
+            </View>
           </View>
         </TouchableOpacity>
       ))}
@@ -78,8 +108,9 @@ function StoreScreen() {
 
 const styles = StyleSheet.create({
   button: {
-    //black border
+    //black rounded border
     borderColor: "black",
+    borderRadius: 10,
     borderWidth: 2,
     margin: 10,
     padding: 10,
@@ -93,14 +124,21 @@ const styles = StyleSheet.create({
   cost: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "black",
+    color: "salmon",
     textAlign: "right",
+    marginRight: 10,
   },
   container: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 10,
+  },
+  fishandcost: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 0,
   },
 });
 
