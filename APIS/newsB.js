@@ -1,6 +1,6 @@
 const fetch = require("node-fetch");
 
-let API_KEY = "700901d27e0a4dffbc1f8f7749e79cbf";
+let API_KEY = "2b3efcf930714d40b5090b67144160b3";
 
 
 const getNewsURLS = () => {

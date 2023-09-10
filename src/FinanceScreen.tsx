@@ -13,7 +13,7 @@ import {
 import getNewsURLS from "../APIS/newsB";
 // import getData from "../APIS/test";
 import CoinBalanceSchema from "./CoinBalance";
-import {summarizer} from "../APIS/text-summarizer";
+import {summarizerAndQuestionGenerator} from "../APIS/text-summarizer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface FlipCardProps {
@@ -34,7 +34,7 @@ const ArticleSchema = {
 };
 
 const FinanceScreen: React.FC = () => {
-  const FlipCard: React.FC<FlipCardProps> = ({ title, content, url }) => {
+  const FlipCard: React.FC<FlipCardProps> = ({ title, content, question, url }) => {
     const flipAnimation = useRef(new Animated.Value(0)).current;
     const flipRotation = useRef(false);
     const [panResponderEnabled, setPanResponderEnabled] = useState(true);
@@ -145,12 +145,14 @@ const FinanceScreen: React.FC = () => {
         >
           <View>
             <Animated.View style={[styles.flipCard, flipToFrontStyle]}>
-              <Text>{title}</Text>
+            <Text style={styles.title}>{title}</Text>
+              <Text>{content}</Text>
             </Animated.View>
             <Animated.View
               style={[styles.flipCard, styles.flipCardBack, flipToBackStyle]}
-            >
-              <Text>{content}</Text>
+            >         
+           <Text style={styles.title}>Test Your Knowledge!</Text>
+              <Text>{question}</Text>
             </Animated.View>
           </View>
         </TouchableOpacity>
@@ -163,6 +165,7 @@ const FinanceScreen: React.FC = () => {
   type Article = {
     title: string;
     content: string;
+    question: string; 
     url: string;
   };
 
@@ -210,7 +213,7 @@ type ExtractedData = {
 const fetchAllTexts = async (urls: string[]): Promise<ExtractedData[]> => {
   const textsPromises = urls.map((url: string) => extractTextFromURL(url));
   const results = await Promise.allSettled(textsPromises);
-
+  console.log(results);
   const successfulTexts = results
     .filter(result => result.status === 'fulfilled')
     .map(result => (result as PromiseFulfilledResult<ExtractedData>).value);
@@ -238,10 +241,11 @@ useEffect(() => {
       // Summarize the texts
       const summarizedArticles = [];
       for (let i = 0; i < extractedTexts.length; i++) {
-        const summary = await summarizer(extractedTexts[i]);
+        const summary = await summarizerAndQuestionGenerator(extractedTexts[i]);
         summarizedArticles.push({
           title: responses[i].title,
-          content: summary,
+          content: summary.summary,
+          question: summary.question,
           url: responses[i].url
         });
       }
@@ -261,13 +265,14 @@ return (
     <ScrollView>
       {/* Map FlipCard components to screen based on data */}
       {data.map((item, key) => (
-        <FlipCard
-          key={key}
-          title={item.title}
-          content={item.content}
-          url={item.url}
-        />
-      ))}
+      <FlipCard
+        key={key}
+        title={item.title}
+        content={item.content}
+        question={item.question}  // passing the question
+        url={item.url}
+      />
+    ))}
     </ScrollView>
   </View>
 );
@@ -297,6 +302,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
   },
+  title: {
+    fontWeight: 'bold',
+    marginBottom: 20,
+  }
 });
 
 export default FinanceScreen;

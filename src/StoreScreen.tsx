@@ -87,7 +87,7 @@ function StoreScreen() {
         ))}
         {/* Button to clear AsyncStorage */}
         <Button
-          title="Clear AsyncStorage"
+          title="Clear"
           onPress={async () => {
             await AsyncStorage.clear();
             console.log("AsyncStorage cleared!");

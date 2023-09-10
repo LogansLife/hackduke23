@@ -1,10 +1,12 @@
-const OPENAI_API_ENDPOINT = "https://api.openai.com/v1/chat/completions";
+OPENAI_API_ENDPOINT = "https://api.openai.com/v1/chat/completions";
 
 
-const apikey = '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'
-const summarizer = async (text) => {
+const apikey = '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'
+
+const summarizerAndQuestionGenerator = async (text) => {
   try {
-    const response = await fetch(OPENAI_API_ENDPOINT, {
+    // First, generate the summary
+    let response = await fetch(OPENAI_API_ENDPOINT, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apikey}`,
@@ -20,11 +22,40 @@ const summarizer = async (text) => {
     });
 
     const data = await response.json();
-    const messageContent = data.choices[0].message.content;
-    return messageContent;
+    const summary = data.choices[0].message.content;
+
+    // Now, generate a question based on the summary
+    response = await fetch(OPENAI_API_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apikey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: [
+          { role: "system", content: "You are a helpful assistant." },
+          { role: "user", content: `Can you generate a question based on this summary? \n\n${summary}` }
+        ],
+      }),
+    });
+
+    const questionData = await response.json();
+    const question = questionData.choices[0].message.content;
+
+    // Store the question (in this example, just adding to an array)
+    questionsStore.push(question);
+
+    return { summary, question };
+
   } catch (err) {
     console.log(err);
     return null;
   }
 };
-module.exports = { summarizer };
+
+// An in-memory store for questions. In a real-world scenario, this should be a database.
+const questionsStore = [];
+
+
+module.exports = { summarizerAndQuestionGenerator, questionsStore };

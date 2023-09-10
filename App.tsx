@@ -52,7 +52,19 @@ function App() {
         backgroundColor={backgroundStyle.backgroundColor}
       />
       <NavigationContainer>
-        <Tab.Navigator>
+        <Tab.Navigator
+          screenOptions={{
+            tabBarStyle: {
+              position: 'absolute',
+              bottom: 5,
+              left: 20,
+              right: 50,
+              width: 350,
+              borderRadius: 10,
+              height: 55,
+              
+            },
+          }}>
           <Tab.Screen
             name="Home"
             component={HomeScreen}
@@ -88,9 +100,12 @@ function App() {
               tabBarIcon: ({ color, size }) => (
                 <Image
                   source={require('./src/assets/644036-200.png')}
-                  style={{ width: 30, height: 30, tintColor: color }}
+                  style={{ width: 30, height: 30, tintColor: color, marginTop: -10 }}
                 />
               ),
+              tabBarLabel: ({color}) => {
+                return <Text style={{color: color, marginTop: -15, marginBottom: 3}}>Home</Text>
+              }
             }}
           />
           <Tab.Screen
@@ -126,9 +141,13 @@ function App() {
               tabBarIcon: ({ color, size }) => (
                 <Image
                   source={require('./src/assets/3344040.png')}
-                  style={{ width: 30, height: 30, tintColor: color }}
+                  style={{ width: 30, height: 30, tintColor: color, marginTop: -10 }}
                 />
               ),
+              tabBarLabel: ({color}) => {
+                return <Text style={{color: color, marginTop: -15 , marginBottom: 3}}>Shop</Text>
+              }
+            
             }}
           />
           <Tab.Screen
@@ -164,9 +183,12 @@ function App() {
               tabBarIcon: ({ color, size }) => (
                 <Image
                   source={require('./src/assets/profit.png')}
-                  style={{ width: 31, height: 31, tintColor: color }}
+                  style={{ width: 31, height: 31, tintColor: color, marginTop: -10 }}
                 />
               ),
+              tabBarLabel: ({color}) => {
+                return <Text style={{color: color, marginTop: -15, marginBottom: 3}}>Business</Text>
+              }
             }}
             
           />
@@ -203,9 +225,12 @@ function App() {
               tabBarIcon: ({ color, size }) => (
                 <Image
                   source={require('./src/assets/4603105-200.png')}
-                  style={{ width: 35, height: 35, tintColor: color }}
+                  style={{ width: 35, height: 35, tintColor: color, marginTop: -10 }}
                 />
               ),
+              tabBarLabel: ({color}) => {
+                return <Text style={{color: color, marginTop: -15, marginBottom: 3}}>Technology</Text>
+              }
             }}
           />
         </Tab.Navigator>
