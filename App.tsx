@@ -27,15 +27,21 @@ function App() {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
-  const [coins, setCoins] = React.useState(0);
+  const [coins, setCoins] = React.useState();
 
   useEffect(() => {
-    const getCoins = async () => {
-      const userCoins = await AsyncStorage.getItem("userCoins");
-      setCoins(parseInt(userCoins, 10));
-    };
-    getCoins();
-  }, [setTimeout(() => {}, 1000)]);
+    setInterval(() => {
+      const getCoins = async () => {
+        const userCoins = await AsyncStorage.getItem("userCoins");
+        if (userCoins == null) {
+          await AsyncStorage.setItem("userCoins", "0");
+        }
+        setCoins(parseInt(userCoins, 10));
+      };
+
+      getCoins();
+    }, 500);
+  }, []);
 
   return (
     <SafeAreaView style={backgroundStyle} flex={1}>

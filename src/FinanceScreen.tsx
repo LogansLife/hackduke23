@@ -77,7 +77,6 @@ const FinanceScreen: React.FC = () => {
     const storeCoins = async () => {
       try {
         let coins = await getCoins();
-        console.log(coins);
         await AsyncStorage.setItem("userCoins", (coins + 1).toString());
       } catch (error) {
         console.error("Error storing coins:", error);
@@ -182,9 +181,9 @@ const FinanceScreen: React.FC = () => {
     <View style={styles.container}>
       <ScrollView>
         {/* Map FlipCard components to screen based on data */}
-        {data.articles.map((item) => (
+        {data.articles.map((item, key) => (
           <FlipCard
-            key={item.id}
+            key={key}
             title={item.title}
             content={item.content}
             url={item.url}

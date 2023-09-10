@@ -25,7 +25,11 @@ function HomeStackScreen() {
   React.useEffect(() => {
     const getItems = async () => {
       const userItems = await AsyncStorage.getItem("items");
-      setItems(JSON.parse(userItems));
+      if (userItems) {
+        setItems(JSON.parse(userItems));
+      } else {
+        setItems([""]);
+      }
     };
     getItems();
   }, [setTimeout(() => {}, 1000)]);
@@ -47,28 +51,28 @@ function HomeStackScreen() {
         {/* Big bear image */}
         <Image source={require("./assets/bigbear.png")} style={styles.bear} />
         {/* Grid of items that user owns (images) */}
-        <ScrollView style={styles.buttonContainer}>
-          {/* Grid with 2 columns */}
-          <View
-            style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              justifyContent: "space-between",
-            }}
-          >
-            {/* Map item images IF items isnt null*/}
-            <FlatList
-              data={filteredImages}
-              keyExtractor={(item, index) => item.id}
-              renderItem={({ item }) => (
-                <View>
-                  <Image source={item.src} style={styles.inventoryItem} />
-                  <Text>{item.name}</Text>
-                </View>
-              )}
-            />
-          </View>
-        </ScrollView>
+        {/* Grid with 2 columns */}
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+          }}
+        >
+          {/* Map item images IF items isnt null*/}
+          <FlatList
+            data={filteredImages}
+            numColumns={3} // Display two columns
+            style={styles.buttonContainer}
+            keyExtractor={(item, index) => item.id}
+            renderItem={({ item }) => (
+              <View>
+                <Image source={item.src} style={styles.inventoryItem} />
+                {/* <Text>{item.name}</Text> */}
+              </View>
+            )}
+          />
+        </View>
       </View>
     </GestureHandlerRootView>
   );
@@ -112,10 +116,13 @@ const styles = {
   },
   inventoryItem: {
     // show full image, no clipping
-    width: windowWidth * 0.4,
+    width: windowWidth * 0.3333,
     //justify height
     height: windowHeight * 0.2,
     resizeMode: "contain",
+    // black border
+    borderWidth: 2,
+    borderColor: "black",
   },
 };
 
