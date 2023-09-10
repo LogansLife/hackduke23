@@ -7,7 +7,7 @@ import { Colors } from "react-native/Libraries/NewAppScreen";
 import { enableScreens } from "react-native-screens";
 import HomeScreen from "./src/HomeScreen";
 import FinanceScreen from "./src/FinanceScreen";
-import PoliticsScreen from "./src/PoliticsScreen";
+import TechScreen from "./src/TechScreen";
 import StoreScreen from "./src/StoreScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Image, View } from "react-native";
@@ -15,10 +15,6 @@ import { Image, View } from "react-native";
 enableScreens();
 
 // Stacks for each screen
-const HomeStack = createStackNavigator();
-const SettingsStack = createStackNavigator();
-const FinanceStack = createStackNavigator();
-const PoliticsStack = createStackNavigator();
 
 const Tab = createBottomTabNavigator();
 
@@ -89,6 +85,12 @@ function App() {
                   </Text>
                 </View>
               ),
+              tabBarIcon: ({ color, size }) => (
+                <Image
+                  source={require('./src/assets/644036-200.png')}
+                  style={{ width: 30, height: 30, tintColor: color }}
+                />
+              ),
             }}
           />
           <Tab.Screen
@@ -121,10 +123,16 @@ function App() {
                   </Text>
                 </View>
               ),
+              tabBarIcon: ({ color, size }) => (
+                <Image
+                  source={require('./src/assets/3344040.png')}
+                  style={{ width: 30, height: 30, tintColor: color }}
+                />
+              ),
             }}
           />
           <Tab.Screen
-            name="Finance"
+            name="Business"
             component={FinanceScreen}
             options={{
               headerStyle: {
@@ -153,11 +161,18 @@ function App() {
                   </Text>
                 </View>
               ),
+              tabBarIcon: ({ color, size }) => (
+                <Image
+                  source={require('./src/assets/profit.png')}
+                  style={{ width: 31, height: 31, tintColor: color }}
+                />
+              ),
             }}
+            
           />
           <Tab.Screen
-            name="Politics"
-            component={PoliticsScreen}
+            name="Technology"
+            component={TechScreen}
             options={{
               headerStyle: {
                 backgroundColor: "#f5f5f5",
@@ -184,6 +199,12 @@ function App() {
                     {coins}
                   </Text>
                 </View>
+              ),
+              tabBarIcon: ({ color, size }) => (
+                <Image
+                  source={require('./src/assets/4603105-200.png')}
+                  style={{ width: 35, height: 35, tintColor: color }}
+                />
               ),
             }}
           />
