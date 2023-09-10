@@ -10,7 +10,8 @@ import {
   ScrollView,
   Linking,
 } from "react-native";
-import getData from "../APIS/news";
+import getNewsURLS from "../APIS/news";
+// import getData from "../APIS/test";
 import CoinBalanceSchema from "./CoinBalance";
 import summarizer from "../APIS/text-summarizer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -167,7 +168,7 @@ const FinanceScreen: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const newData = await getData();
+        const newData = await getNewsURLS();
         setData(newData);
       } catch (error) {
         console.error("Error:", error);
