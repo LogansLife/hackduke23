@@ -21,6 +21,7 @@ const windowHeight = Dimensions.get("window").height;
 
 function HomeStackScreen() {
   const [items, setItems] = React.useState([]);
+  const [displayItem, setDisplayItem] = React.useState(null);
 
   React.useEffect(() => {
     const getItems = async () => {
@@ -36,6 +37,10 @@ function HomeStackScreen() {
 
   const filteredImages = images.filter((item) => items.includes(item.name));
 
+  const handleItemClick = (item) => {
+    setDisplayItem(item);
+  };
+
   return (
     <GestureHandlerRootView>
       <View>
@@ -50,6 +55,18 @@ function HomeStackScreen() {
         />
         {/* Big bear image */}
         <Image source={require("./assets/bigbear.png")} style={styles.bear} />
+        {/* Overlay image */}
+        <Image
+          source={displayItem ? displayItem.src || null : null}
+          style={{
+            position: "absolute",
+            width: 100,
+            height: 100,
+            alignContent: "center",
+            top: displayItem ? displayItem.y : 0,
+            left: displayItem ? displayItem.x : 0,
+          }}
+        />
         {/* Grid of items that user owns (images) */}
         {/* Grid with 2 columns */}
         <View
@@ -67,8 +84,35 @@ function HomeStackScreen() {
             keyExtractor={(item, index) => item.id}
             renderItem={({ item }) => (
               <View>
-                <Image source={item.src} style={styles.inventoryItem} />
-                {/* <Text>{item.name}</Text> */}
+                <TouchableOpacity onPress={() => handleItemClick(item)}>
+                  <Image
+                    source={require("./assets/Back.png")}
+                    style={{
+                      flex: 1,
+                      width: windowWidth * 0.35,
+                      height: windowHeight * 0.2,
+                      position: "absolute",
+                      opacity: 0.75,
+                      zIndex: -1,
+                    }}
+                  />
+                  <Image source={item.src} style={styles.inventoryItem} />
+                  <Text
+                    style={{
+                      color: "white",
+                      position: "absolute",
+                      zIndex: -1,
+                      fontSize: 18,
+                      fontWeight: "bold",
+                      top: windowHeight * 0.17,
+
+                      left: windowWidth * 0.1,
+                      fontFamily: "Baskerville-Bold",
+                    }}
+                  >
+                    {item.name}
+                  </Text>
+                </TouchableOpacity>
               </View>
             )}
           />
@@ -121,6 +165,22 @@ const styles = {
     height: windowHeight * 0.2,
     resizeMode: "contain",
     // black border
+    borderWidth: 2,
+    borderColor: "black",
+  },
+  displayedImagesContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    marginTop: 20, // Adjust this value for spacing
+  },
+  displayedItem: {
+    // Show full image, no clipping
+    width: windowWidth * 0.3333,
+    // Justify height
+    height: windowHeight * 0.2,
+    resizeMode: "contain",
+    // Black border
     borderWidth: 2,
     borderColor: "black",
   },
