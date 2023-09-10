@@ -7,6 +7,7 @@ import { StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { View } from "react-native";
 import { Image } from "react-native";
+import { ScrollView } from "react-native";
 
 const buyItem = async (name: String) => {
   try {
@@ -62,46 +63,48 @@ function StoreScreen() {
 
   return (
     <SafeAreaView>
-      {/* Map names of all images */}
-      {filteredImages.map((item) => (
-        <TouchableOpacity
-          style={styles.button}
-          key={item.id}
-          onPress={() => buyItem(item.name)}
-        >
-          <View style={styles.container}>
-            <Text style={styles.itemName}>
-              {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
-            </Text>
-            <View style={styles.fishandcost}>
-              <Text style={styles.cost}>{item.cost}</Text>
-              <Image
-                source={require("./assets/salmonnn.png")}
-                style={{ width: 35, height: 30 }}
-              />
+      <ScrollView>
+        {/* Map names of all images */}
+        {filteredImages.map((item) => (
+          <TouchableOpacity
+            style={styles.button}
+            key={item.id}
+            onPress={() => buyItem(item.name)}
+          >
+            <View style={styles.container}>
+              <Text style={styles.itemName}>
+                {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
+              </Text>
+              <View style={styles.fishandcost}>
+                <Text style={styles.cost}>{item.cost}</Text>
+                <Image
+                  source={require("./assets/salmonnn.png")}
+                  style={{ width: 35, height: 30 }}
+                />
+              </View>
             </View>
-          </View>
-        </TouchableOpacity>
-      ))}
-      {/* Button to clear AsyncStorage */}
-      <Button
-        title="Clear AsyncStorage"
-        onPress={async () => {
-          await AsyncStorage.clear();
-          console.log("AsyncStorage cleared!");
-        }}
-      />
-      {/* Button that adds 100 coins */}
-      <Button
-        title="Add 100 coins"
-        onPress={async () => {
-          const currentCoins = await AsyncStorage.getItem("userCoins");
-          const parsedCoins = parseInt(currentCoins, 10);
-          const newCoins = parsedCoins + 100;
-          console.log(newCoins);
-          await AsyncStorage.setItem("userCoins", JSON.stringify(newCoins));
-        }}
-      />
+          </TouchableOpacity>
+        ))}
+        {/* Button to clear AsyncStorage */}
+        <Button
+          title="Clear AsyncStorage"
+          onPress={async () => {
+            await AsyncStorage.clear();
+            console.log("AsyncStorage cleared!");
+          }}
+        />
+        {/* Button that adds 100 coins */}
+        <Button
+          title="Add 100 coins"
+          onPress={async () => {
+            const currentCoins = await AsyncStorage.getItem("userCoins");
+            const parsedCoins = parseInt(currentCoins, 10);
+            const newCoins = parsedCoins + 100;
+            console.log(newCoins);
+            await AsyncStorage.setItem("userCoins", JSON.stringify(newCoins));
+          }}
+        />
+      </ScrollView>
     </SafeAreaView>
   );
 }
