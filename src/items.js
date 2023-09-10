@@ -36,6 +36,7 @@ const images = [
     src: require("./assets/ironman.png"),
     x: 150,
     y: -10,
+    size: 0.5,
   },
   {
     id: "6",
