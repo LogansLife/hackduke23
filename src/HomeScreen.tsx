@@ -60,8 +60,10 @@ function HomeStackScreen() {
           source={displayItem ? displayItem.src || null : null}
           style={{
             position: "absolute",
-            width: 100,
-            height: 100,
+            //If displayItem is null, set width to default, else set width to displayItem.width
+            width: displayItem ? displayItem.width : windowWidth * 0.3333,
+            //If displayItem is null, set height to default, else set height to displayItem.height
+            height: displayItem ? displayItem.height : windowHeight * 0.2,
             alignContent: "center",
             top: displayItem ? displayItem.y : 0,
             left: displayItem ? displayItem.x : 0,
