@@ -86,35 +86,8 @@ function HomeStackScreen() {
             keyExtractor={(item, index) => item.id}
             renderItem={({ item }) => (
               <View>
-<TouchableOpacity 
-    onPress={() => handleItemClick(item)}
-    style={{ alignItems: 'center', justifyContent: 'center' }} // <-- Add these
->
-    <Image
-        source={require("./assets/Back.png")}
-        style={{
-            flex: 1,
-            width: windowWidth * 0.34,
-            height: windowHeight * 0.228,
-            position: "absolute",
-            opacity: 0.75,
-            zIndex: -1,
-        }}
-    />
-    <Image source={item.src} style={styles.inventoryItem} />
-    <Text
-        style={{
-            color: "white",
-            fontSize: 18,
-            bottom: windowHeight * 0.03,
-            fontWeight: "bold",
-            fontFamily: "Baskerville-Bold",
-            textAlign: 'center',  // <-- Add this for horizontal centering of text content
-        }}
-    >
-        {item.name.toUpperCase()}
-    </Text>
-</TouchableOpacity>
+                <Image source={item.src} style={styles.inventoryItem} />
+                {/* <Text>{item.name}</Text> */}
               </View>
             )}
           />

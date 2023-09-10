@@ -24,10 +24,12 @@ const images = [
     name: "shades",
     cost: "4",
     src: require("./assets/shades.png"),
-    x: 160,
-    y: 67,
-    height: 20,
-    width: 80,
+  },
+  {
+    id: "4",
+    name: "nikes",
+    cost: "8",
+    src: require("./assets/nikes.png"),
   },
   {
     id: "5",
@@ -104,10 +106,12 @@ const images = [
     name: "batman",
     cost: "8",
     src: require("./assets/batman.png"),
-    x: 108,
-    y: -5,
-    height: 155,
-    width: 155,
+  },
+  {
+    id: "13",
+    name: "sneaker",
+    cost: "8",
+    src: require("./assets/sneaker.png"),
   },
   {
     id: "14",
