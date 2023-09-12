@@ -32,3 +32,6 @@ In a new terminal, run `npx react-native run-ios` to start the app. An Xcode sim
 ## API Keys
 
 You'll need three API keys: [OpenAI](https://openai.com/), [NewsAPI](https://newsapi.org/), and [Extractor API](https://extractorapi.com/). Put them in the desired locations (hard-coded or `.env` file).
+## Acknowledgements
+
+ - [HackDuke](https://hackduke.org/)
